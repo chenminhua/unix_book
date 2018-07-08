@@ -82,6 +82,13 @@ int snprintf(char *restrict buf, size_t n, const char *restrict format, ...);  /
 ```
 
 ## 临时文件
+```c
+// 每次调用tmpnam都会返回一个有效路径名
+char *tmpnam(char *ptr);
+
+// tmpfile创建一个临时二进制文件，在关闭该文件或程序结束时自动删除这种文件。
+FILE *tmpfile(void);
+```
 
 ## 内存流
 
