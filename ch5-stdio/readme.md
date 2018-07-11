@@ -94,3 +94,34 @@ FILE *tmpfile(void);
 
 ## 标准IO的不足与替代软件
 标准IO的一个不足是效率不高，这与它需要复制的数据量有关。当使用fgets和fputs时，通常需要复制两次数据：一次是在内核和标准IO缓冲区之间，一次是在标准IO缓冲区和用户程序行缓冲之间。快速io库fio避免了这一点，其方法是使读一行的函数返回指向该行的指针，而不是复制到另一个缓冲区。标准IO的另一个替代软件是ASI(Alloc Stream Interface)，其使用了映射文件(mmap,见第18章)。
+
+# code time
+基于stdio实现一个cat
+
+```c
+int main(int argc, char *argv[]) {
+    FILE *fp;
+    void filecopy(FILE *, FILE *);
+
+    if (argc == 1) {
+        filecopy(stdin, stdout);
+    }else {
+        while (--argc > 0) {
+            if ((fp = fopen(*++argv, "r")) == NULL) {
+                printf("can't open %s\n", *argv);
+                exit(1);
+            } else {
+                filecopy(fp, stdout);
+                fclose(fp);
+            }
+        }
+    }
+    return 0;
+}
+
+void filecopy(FILE *ifp, FILE *ofp) {
+    int c;
+    while ((c = getc(ifp)) != EOF)
+        putc(c, ofp);
+}
+```
